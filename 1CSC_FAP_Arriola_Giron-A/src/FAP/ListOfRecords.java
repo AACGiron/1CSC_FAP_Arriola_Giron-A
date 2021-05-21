@@ -5,11 +5,12 @@
  */
 package FAP;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
-import java.time.LocalDate;
 import java.util.*;
     
 public class ListOfRecords implements ActionListener{
@@ -164,7 +165,20 @@ public class ListOfRecords implements ActionListener{
     
     private void export() {
     ////export to CSV
-    
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuuMMddHHmmss");
+        LocalDateTime now = LocalDateTime.now();
+        String file = dtf.format(now);
+		
+        try{
+            String content = this.taInfo.getText();
+            PrintWriter pw = new PrintWriter (new FileWriter(file + ".csv"));
+            pw.println(content);
+            pw.close();      
+        } 
+        
+        catch (IOException e){
+        System.out.println("An error was encountered");
+        }
     
     }
     
