@@ -382,9 +382,10 @@ class RemoveRecord implements ActionListener{
 }
 
 class Person {
-    private String name;
+	    private String name;
     private LocalDate birthday;
     private int age;
+    private LocalDate dateNow;
     Person(String name, LocalDate birthday) {
         setName(name);
         setBirthday(birthday);
@@ -403,7 +404,7 @@ class Person {
         this.birthday = birthday;
         
         //put here instead of constructor so that it runs every time the birthday is changed.
-        ageCalculator(birthday);
+        computeAge(birthday);
     }
     
     public LocalDate getBirthday() {
@@ -411,11 +412,10 @@ class Person {
         return(birthday);
     }
     
-    private void ageCalculator(LocalDate birthday) {
-        ////calculator code
-        this.age = 0; //replace when code is done
+    private void computeAge(LocalDate birthday) {
+        
+        dateNow = LocalDate.now();
+        
+        this.age = Period.between(birthday, dateNow).getYears();
     }
-    
-    
-    
 }
