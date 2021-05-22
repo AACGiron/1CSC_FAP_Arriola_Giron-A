@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -144,19 +144,6 @@ public class ListOfRecords implements ActionListener{
     
     }
     
-    protected void addRecord(String name, LocalDate birthday) {
-        
-        ////for loop, creates a new array length+1 of names[] and copies all items + the new person
-        
-    
-    }
-    
-    protected void removeRecord(String name) {
-        
-        ////for loop, creates a new array length-1 of names[] and copies all items - the person removed
-        
-    
-    }
     
     public void refresh() {
         
@@ -219,10 +206,11 @@ class AddRecord implements ActionListener{
     
     final String[] mm = {"January", "February", "March", "April", "May", "June", "July", 
                    "August", "September", "October", "November", "December"};
-    final String[] dd = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+    final String[] dd = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
                 "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
     String[] yyyy;
     int yearNow;
+    String sMonth;
             
     
     AddRecord() {
@@ -296,10 +284,22 @@ class AddRecord implements ActionListener{
         Object sauce = actionEvent.getSource();
         
         if (sauce == buttSaveBack) {
-            birthday = LocalDate.parse( comboxMonth.getSelectedIndex() + "-" + comboxDay.getSelectedIndex()  + "-" + comboxYear.getSelectedIndex());
+            if (comboxMonth.getSelectedIndex() + 1 < 10) {
+                
+                
+                sMonth = "0" + Integer.toString(comboxMonth.getSelectedIndex() + 1);
+            
+            }
+            
+            else { 
+                sMonth = Integer.toString(comboxMonth.getSelectedIndex() + 1);
+            }
+            
+            
+            birthday = LocalDate.parse((comboxYear.getSelectedItem()  + "-" + sMonth + "-" + comboxDay.getSelectedItem()));
             new Person(tfName.getText(),birthday);
              
-                this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+               
            
             
             ////close
@@ -307,10 +307,20 @@ class AddRecord implements ActionListener{
         }
         
         if (sauce == buttSaveAnother) {
-            birthday = LocalDate.parse( comboxMonth.getSelectedIndex() + "-" + comboxDay.getSelectedIndex()  + "-" + comboxYear.getSelectedIndex());
+            if (comboxMonth.getSelectedIndex() + 1 < 10) {
+                
+                
+                sMonth = "0" + Integer.toString(comboxMonth.getSelectedIndex() + 1);
+            
+            }
+            
+            else { 
+                sMonth = Integer.toString(comboxMonth.getSelectedIndex() + 1);
+            }
+            
+            birthday = LocalDate.parse((comboxYear.getSelectedItem()  + "-" + sMonth + "-" + comboxDay.getSelectedItem()));
             new Person(tfName.getText(),birthday);
              
-             this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             
         }
         
@@ -393,7 +403,7 @@ class RemoveRecord implements ActionListener{
         
         if (sauce == buttRemoveBack) {
         
-            listOfRecords.removeRecord(name);
+            
             
             ////close
         
@@ -401,7 +411,7 @@ class RemoveRecord implements ActionListener{
         
         if (sauce == buttRemoveAnother) {
             
-            listOfRecords.removeRecord(name);
+            
             
         }
         
