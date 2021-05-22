@@ -5,12 +5,13 @@
  */
 package FAP;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
     
 public class ListOfRecords implements ActionListener{
@@ -157,7 +158,16 @@ public class ListOfRecords implements ActionListener{
     
     }
     
-    private void refresh() {
+    public void refresh() {
+        
+        String infoText = "Names \t Birthday \t Age\n";
+        for (int i = 0; i < names.size() - 1; i++) {
+            infoText += names.get(i).getName() + " \t " + names.get(i).getBirthday() + " \t " + names.get(i).getAge() + "\n";
+        
+            
+            
+        }
+        this.taInfo.setText(infoText);
         
         ////for loop, inputs all Person name\n, birthday\n and ageCalculator() to respective JTextAreas, but first clears the text
                 
@@ -165,22 +175,30 @@ public class ListOfRecords implements ActionListener{
     
     private void export() {
     ////export to CSV
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuuMMddHHmmss");
+     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuuMMddHHmmss");
         LocalDateTime now = LocalDateTime.now();
         String file = dtf.format(now);
-		
+
         try{
             String content = this.taInfo.getText();
             PrintWriter pw = new PrintWriter (new FileWriter(file + ".csv"));
             pw.println(content);
             pw.close();      
         } 
-        
+
         catch (IOException e){
         System.out.println("An error was encountered");
         }
     
     }
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 
@@ -197,18 +215,17 @@ class AddRecord implements ActionListener{
     private JComboBox comboxMonth, comboxDay, comboxYear;
     private JButton buttSaveBack, buttSaveAnother, buttBack;
     
-    private String name;
-    
     private LocalDate birthday;
     
     final String[] mm = {"January", "February", "March", "April", "May", "June", "July", 
                    "August", "September", "October", "November", "December"};
     final String[] dd = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
                 "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-    int[] yyyy;
+    String[] yyyy;
+    int yearNow;
             
     
-     AddRecord() {
+    AddRecord() {
         
         ////For loop, sets yyyy into array of years, 1900 to current year;
         yearNow = Period.between(LocalDate.parse("1900-01-01"), LocalDate.now()).getYears() + 1;
@@ -314,7 +331,6 @@ class AddRecord implements ActionListener{
 
 
 
-
 class RemoveRecord implements ActionListener{
 
     ListOfRecords listOfRecords;
@@ -329,12 +345,10 @@ class RemoveRecord implements ActionListener{
             
     RemoveRecord() {
         
-     ////For loop, sets yyyy into array of years, 1900 to current year;
     
      frame = new JFrame("Remove Record");
         
      panName = new JPanel();
-
      panButton = new JPanel();
      
      labName = new JLabel("Name: ");
@@ -403,16 +417,17 @@ class RemoveRecord implements ActionListener{
 }
 
 class Person {
-	    private String name;
+    private String name;
     private LocalDate birthday;
     private int age;
     private LocalDate dateNow;
     Person(String name, LocalDate birthday) {
         setName(name);
         setBirthday(birthday);
+        this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
     
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
     
@@ -421,7 +436,7 @@ class Person {
     }
     
     
-    public void setBirthday(LocalDate birthday) {
+    private void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
         
         //put here instead of constructor so that it runs every time the birthday is changed.
@@ -435,13 +450,13 @@ class Person {
     
     private void computeAge(LocalDate birthday) {
         
-        dateNow = LocalDate.now();
         
-        this.age = Period.between(birthday, dateNow).getYears();
+        this.age = Period.between(birthday, LocalDate.now()).getYears();
     }
-	
+    
     public int getAge() {
         return age;
     }
+    
     
 }
