@@ -208,28 +208,36 @@ class AddRecord implements ActionListener{
     int[] yyyy;
             
     
-    AddRecord() {
+     AddRecord() {
         
-     ////For loop, sets yyyy into array of years, 1900 to current year;
+        ////For loop, sets yyyy into array of years, 1900 to current year;
+        yearNow = Period.between(LocalDate.parse("1900-01-01"), LocalDate.now()).getYears() + 1;
+        yyyy = new String[yearNow];
+        for (int i = 0; i < yyyy.length; i++) {
+            yyyy[i] = Integer.toString(1900 + i);
+            
+        }
+        
     
-     frame = new JFrame("Add Record");
+        frame = new JFrame("Add Record");
         
-     panName = new JPanel();
-     panBirthday = new JPanel(); 
-     panButton = new JPanel();
+        panName = new JPanel();
+        panBirthday = new JPanel(); 
+        panButton = new JPanel();
      
-     labName = new JLabel("Name: ");
-     labBirthday = new JLabel("Birthday");
+        labName = new JLabel("Name: ");
+        labBirthday = new JLabel("Birthday");
      
-     tfName = new JTextField(40);
+        tfName = new JTextField(40);
      
-     comboxMonth = new JComboBox();
-     comboxDay = new JComboBox();
-     comboxYear = new JComboBox();
+        comboxMonth = new JComboBox(mm);
+        comboxDay = new JComboBox(dd);
+        comboxYear = new JComboBox(yyyy);
      
-     buttSaveBack = new JButton("Save and Go Back");
-     buttSaveAnother = new JButton("Save and Add Another");
-     buttBack = new JButton("Back");
+        buttSaveBack = new JButton("Save and Go Back");
+        buttSaveAnother = new JButton("Save and Add Another");
+        buttBack = new JButton("Back");
+       
        
     }
     
@@ -271,16 +279,21 @@ class AddRecord implements ActionListener{
         Object sauce = actionEvent.getSource();
         
         if (sauce == buttSaveBack) {
-        
-            listOfRecords.addRecord(name, birthday);
+            birthday = LocalDate.parse( comboxMonth.getSelectedIndex() + "-" + comboxDay.getSelectedIndex()  + "-" + comboxYear.getSelectedIndex());
+            new Person(tfName.getText(),birthday);
+             
+                this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+           
             
             ////close
         
         }
         
         if (sauce == buttSaveAnother) {
-            
-            listOfRecords.addRecord(name, birthday);
+            birthday = LocalDate.parse( comboxMonth.getSelectedIndex() + "-" + comboxDay.getSelectedIndex()  + "-" + comboxYear.getSelectedIndex());
+            new Person(tfName.getText(),birthday);
+             
+             this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             
         }
         
@@ -293,6 +306,14 @@ class AddRecord implements ActionListener{
     }
     
 }
+
+
+
+
+
+
+
+
 
 class RemoveRecord implements ActionListener{
 
@@ -418,4 +439,9 @@ class Person {
         
         this.age = Period.between(birthday, dateNow).getYears();
     }
+	
+    public int getAge() {
+        return age;
+    }
+    
 }
