@@ -32,7 +32,7 @@ public class ListOfRecords implements ActionListener{
     
     final String[] sortOptions = {"Name", "Birthday", "Age"};
     
-    ArrayList<Person> names;
+    public static ArrayList<Person> names;
             
     
    public ListOfRecords() {
@@ -117,30 +117,76 @@ public class ListOfRecords implements ActionListener{
         
         Object sauce = actionEvent.getSource();
         
+        //for this class
         if (sauce == buttAddRecord) {
             addRecord = new AddRecord();
             addRecord.launchFrame();
-            
-            refresh();
-            
+            addRecord.buttSaveBack.addActionListener(this);
+            addRecord.buttSaveAnother.addActionListener(this);
+            addRecord.buttBack.addActionListener(this);
         }
-        
         if (sauce == buttRemRecord) {
             removeRecord = new RemoveRecord();
             removeRecord.launchFrame();
-           
             ////for loop, creates a new array length-1 of names[] and copies all items not in index 0
+            refresh();
+        }
+        if (sauce == buttExport) {
+            export();
+        }
+        
+        
+        
+        //for addRecord
+         if (sauce == addRecord.buttSaveBack) {
+            if (addRecord.comboxMonth.getSelectedIndex() + 1 < 10) {
+                
+                
+                addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
             
+            }
+            
+            else { 
+                addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
+            }
+            
+            
+            addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + 
+                    "-" + addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
+            names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
+            refresh();
+             
+               
+           
+            
+            ////close
+        
+        }
+        
+        if (sauce == addRecord.buttSaveAnother) {
+            if (addRecord.comboxMonth.getSelectedIndex() + 1 < 10) {
+                
+                
+                addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
+            
+            }
+            
+            else { 
+                addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
+            }
+            
+            addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + "-" + 
+                    addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
+            names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
             refresh();
             
         }
         
-        if (sauce == buttExport) {
+        if (sauce == addRecord.buttBack) {
             
-            export();
-            
-        }
+            ////close
         
+        }
     
     }
     
@@ -191,18 +237,18 @@ public class ListOfRecords implements ActionListener{
 
 }
 
-class AddRecord implements ActionListener{
+class AddRecord {
 
     ListOfRecords listOfRecords;
     
-    private JFrame frame;
-    private JPanel panName, panBirthday, panButton;
-    private JLabel labName, labBirthday;
-    private JTextField tfName;
-    private JComboBox comboxMonth, comboxDay, comboxYear;
-    private JButton buttSaveBack, buttSaveAnother, buttBack;
+    protected JFrame frame;
+    protected JPanel panName, panBirthday, panButton;
+    protected JLabel labName, labBirthday;
+    protected JTextField tfName;
+    protected JComboBox comboxMonth, comboxDay, comboxYear;
+    protected JButton buttSaveBack, buttSaveAnother, buttBack;
     
-    private LocalDate birthday;
+    protected LocalDate birthday;
     
     final String[] mm = {"January", "February", "March", "April", "May", "June", "July", 
                    "August", "September", "October", "November", "December"};
@@ -273,64 +319,16 @@ class AddRecord implements ActionListener{
         frame.pack();
         frame.setVisible(true);
         
-        buttSaveBack.addActionListener(this);
-        buttSaveAnother.addActionListener(this);
-        buttBack.addActionListener(this);
         
     }
     
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        Object sauce = actionEvent.getSource();
-        
-        if (sauce == buttSaveBack) {
-            if (comboxMonth.getSelectedIndex() + 1 < 10) {
-                
-                
-                sMonth = "0" + Integer.toString(comboxMonth.getSelectedIndex() + 1);
-            
-            }
-            
-            else { 
-                sMonth = Integer.toString(comboxMonth.getSelectedIndex() + 1);
-            }
-            
-            
-            birthday = LocalDate.parse((comboxYear.getSelectedItem()  + "-" + sMonth + "-" + comboxDay.getSelectedItem()));
-            new Person(tfName.getText(),birthday);
-             
-               
-           
-            
-            ////close
-        
-        }
-        
-        if (sauce == buttSaveAnother) {
-            if (comboxMonth.getSelectedIndex() + 1 < 10) {
-                
-                
-                sMonth = "0" + Integer.toString(comboxMonth.getSelectedIndex() + 1);
-            
-            }
-            
-            else { 
-                sMonth = Integer.toString(comboxMonth.getSelectedIndex() + 1);
-            }
-            
-            birthday = LocalDate.parse((comboxYear.getSelectedItem()  + "-" + sMonth + "-" + comboxDay.getSelectedItem()));
-            new Person(tfName.getText(),birthday);
-             
-            
-        }
-        
-        if (sauce == buttBack) {
-            
-            ////close
-        
-        }
-    
-    }
+//    @Override
+//    public void actionPerformed(ActionEvent actionEvent) {
+//        Object sauce = actionEvent.getSource();
+//        
+//       
+//    
+//    }
     
 }
 
@@ -470,3 +468,4 @@ class Person {
     
     
 }
+
