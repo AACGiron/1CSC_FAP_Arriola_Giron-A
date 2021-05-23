@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.*;
     
-public class ListOfRecords implements ActionListener{
+public class ListOfRecords implements ActionListener, ItemListener{
     
     AddRecord addRecord;
     RemoveRecord removeRecord;
@@ -35,6 +35,7 @@ public class ListOfRecords implements ActionListener{
     
     public static ArrayList<Person> names;
     String infoText;
+    boolean isAscending;
             
     
    public ListOfRecords() {
@@ -62,6 +63,7 @@ public class ListOfRecords implements ActionListener{
         buttgrpRadButt = new ButtonGroup();
         radbuttAscend = new JRadioButton("Ascending");
         radbuttDescend = new JRadioButton("Descending");
+        radbuttAscend.setSelected(true);
         
         buttgrpRadButt.add(radbuttAscend);
         buttgrpRadButt.add(radbuttDescend);
@@ -117,13 +119,64 @@ public class ListOfRecords implements ActionListener{
 
     }
    
+   public void addRecord() {
+   if (addRecord.comboxMonth.getSelectedIndex() < 10) {
+                addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
+            }
+            else { 
+                addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
+            }
+            
+            addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + 
+                    "-" + addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
+            names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
+            
+             refresh();
+   }
+   
+   public void removeRecord() {
+        for (int i = 0; i < names.size(); i++) {
+            if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
+                names.remove(i);
+                refresh();
+                break;
+                    
+            }
+            ////if i == names size throw exception
+        }
+   
+   }
+   
+   public void sort() {
+        
+        if (comboxSort.getSelectedItem().equals("Name") && isAscending) {
+            names.sort(new AscNameSort());
+            
+        }
+        else if (comboxSort.getSelectedItem().equals("Birthday") && isAscending) {
+            names.sort(new AscBdaySort());
+        }
+        else if (comboxSort.getSelectedItem().equals("Age") && isAscending) {
+            names.sort(new DescBdaySort());
+        }
+        else if (comboxSort.getSelectedItem().equals("Name") && ! isAscending) {
+            names.sort(new DescNameSort());
+        }
+        else if (comboxSort.getSelectedItem().equals("Birthday") && ! isAscending) {
+            names.sort(new DescBdaySort());
+        }
+        else if (comboxSort.getSelectedItem().equals("Age") && ! isAscending) {
+            names.sort(new AscBdaySort());
+        }
+            
+    }
+   
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         
         Object sauce = actionEvent.getSource();
         
         //for this class
-        
         if (sauce == buttAddRecord) {
             addRecord = new AddRecord();
             addRecord.launchFrame();
@@ -141,79 +194,54 @@ public class ListOfRecords implements ActionListener{
         if (sauce == buttExport) {
             export();
         }
-        
-        
+        if (radbuttAscend.isSelected()) {
+            isAscending = true;
+            sort();
+        }
+        else if (radbuttAscend.isSelected()) {
+            isAscending = false;
+            sort();
+        }
         
         
         
         //for addRecord
-        try{
          if (sauce == addRecord.buttSaveBack) {
-            if (addRecord.comboxMonth.getSelectedIndex() < 10) {
-                addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
-            }
-            else { 
-                addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
-            }
             
-            addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + 
-                    "-" + addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
-            names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
-             refresh();
-             addRecord.frame.dispose();
+            addRecord();
+            addRecord.frame.dispose();
             ////close
         }
         
         if (sauce == addRecord.buttSaveAnother) {
-            if (addRecord.comboxMonth.getSelectedIndex() < 10) {
-                
-                addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
-            }
-            else { 
-                addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
-            }
-            addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + "-" + 
-                    addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
-            names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
-            refresh();
+            
+            addRecord();
+           
+            
         }
         if (sauce == addRecord.buttBack) {
             ////close
             addRecord.frame.dispose();
         }
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Please input a proper date!");
-        }
+        
         
         
         //for removeRecord
-        try{
         if (sauce == removeRecord.buttRemoveBack) {
-            for (int i = 0; i < names.size(); i++) {
-                if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
-                    names.remove(i);
-                    refresh();
-                    break;
-                    
-                }
-                ////if i == names size throw exception
-            }
-                        
+         
+            removeRecord();
+           
+                      
             
             removeRecord.frame.dispose();
             ////close
-            
+        
         }
         
         if (sauce == removeRecord.buttRemoveAnother) {
-            for (int i = 0; i < names.size(); i++) {
-                if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
-                    names.remove(i);
-                    refresh();
-                    break;
-                }
-            }
+            
+            removeRecord();
+
         }
         
         if (sauce == removeRecord.buttBack) {
@@ -222,11 +250,7 @@ public class ListOfRecords implements ActionListener{
             ////close
         
         }
-        }
-        catch (NullPointerException e){
-            System.out.print("");
-        }
-        
+    
     }
     
     
@@ -238,7 +262,9 @@ public class ListOfRecords implements ActionListener{
             infoText += names.get(i).getName() + " \t " + names.get(i).getBirthday() + " \t " + names.get(i).getAge() + "\n";
             
         }
+        sort();
         this.taInfo.setText(infoText);
+        
         
         
     }
@@ -261,8 +287,16 @@ public class ListOfRecords implements ActionListener{
         }
     
     }
-    
-    
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        
+        Object sauce = e.getSource();
+        if (sauce == comboxSort) {
+            sort();
+        }
+    }
+}
     
     
     
@@ -272,7 +306,6 @@ public class ListOfRecords implements ActionListener{
     
     
 
-}
 
 class AddRecord {
 
@@ -466,5 +499,37 @@ class Person {
     }
     
     
+}
+
+class AscNameSort implements Comparator<Person> 
+{
+    @Override
+    public int compare(Person p1, Person p2) {
+        return p2.getName().compareToIgnoreCase(p1.getName());
+    }
+}
+
+class DescNameSort implements Comparator<Person> 
+{
+    @Override
+    public int compare(Person p1, Person p2) {
+        return p1.getName().compareToIgnoreCase(p2.getName());
+    }
+}
+
+class AscBdaySort implements Comparator<Person> 
+{
+    @Override
+    public int compare(Person p1, Person p2) {
+        return p2.getBirthday().compareTo(p1.getBirthday());
+    }
+}
+
+class DescBdaySort implements Comparator<Person> 
+{
+    @Override
+    public int compare(Person p1, Person p2) {
+        return p1.getBirthday().compareTo(p2.getBirthday());
+    }
 }
 
