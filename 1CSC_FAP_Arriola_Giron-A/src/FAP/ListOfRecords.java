@@ -12,6 +12,7 @@ import java.io.*;
 import java.time.*;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.*;
     
 public class ListOfRecords implements ActionListener{
@@ -33,6 +34,7 @@ public class ListOfRecords implements ActionListener{
     final String[] sortOptions = {"Name", "Birthday", "Age"};
     
     public static ArrayList<Person> names;
+    String infoText;
             
     
    public ListOfRecords() {
@@ -69,6 +71,7 @@ public class ListOfRecords implements ActionListener{
         
         names = new ArrayList<Person>();
         
+        infoText = "Names \t Birthday \t Age\n";
         
    } 
    
@@ -93,6 +96,8 @@ public class ListOfRecords implements ActionListener{
         panClickables.add(panButton);
         
         panText.add(scrl, BorderLayout.CENTER);
+        
+        this.taInfo.setText(infoText);
         
         
         
@@ -128,8 +133,9 @@ public class ListOfRecords implements ActionListener{
         if (sauce == buttRemRecord) {
             removeRecord = new RemoveRecord();
             removeRecord.launchFrame();
-            ////for loop, creates a new array length-1 of names[] and copies all items not in index 0
-            refresh();
+            removeRecord.buttRemoveBack.addActionListener(this);
+            removeRecord.buttRemoveAnother.addActionListener(this);
+            removeRecord.buttBack.addActionListener(this);
         }
         if (sauce == buttExport) {
             export();
@@ -140,49 +146,66 @@ public class ListOfRecords implements ActionListener{
         //for addRecord
          if (sauce == addRecord.buttSaveBack) {
             if (addRecord.comboxMonth.getSelectedIndex() + 1 < 10) {
-                
-                
                 addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
-            
             }
-            
             else { 
                 addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
             }
             
-            
             addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + 
                     "-" + addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
             names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
-            refresh();
-             
-               
-           
-            
+             refresh();
             ////close
-        
         }
         
         if (sauce == addRecord.buttSaveAnother) {
             if (addRecord.comboxMonth.getSelectedIndex() + 1 < 10) {
                 
-                
                 addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
-            
             }
-            
             else { 
                 addRecord.sMonth = Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
             }
-            
             addRecord.birthday = LocalDate.parse((addRecord.comboxYear.getSelectedItem()  + "-" + 
                     addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
             names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
             refresh();
-            
+        }
+        if (sauce == addRecord.buttBack) {
+            ////close
         }
         
-        if (sauce == addRecord.buttBack) {
+        
+        
+        //for removeRecord
+        if (sauce == removeRecord.buttRemoveBack) {
+            for (int i = 0; i < names.size(); i++) {
+                if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
+                    names.remove(i);
+                    refresh();
+                    break;
+                }
+                ////if i == names size throw exception
+            }
+                        
+            
+            
+            ////close
+        
+        }
+        
+        if (sauce == removeRecord.buttRemoveAnother) {
+            for (int i = 0; i < names.size(); i++) {
+                if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
+                    names.remove(i);
+                    refresh();
+                    break;
+                }
+            }
+        }
+        
+        if (sauce == removeRecord.buttBack) {
             
             ////close
         
@@ -193,17 +216,15 @@ public class ListOfRecords implements ActionListener{
     
     public void refresh() {
         
-        String infoText = "Names \t Birthday \t Age\n";
-        for (int i = 0; i < names.size() - 1; i++) {
+        ////for loop, inputs all Person name\n, birthday\n and ageCalculator() to respective JTextAreas, but first clears the text
+        infoText = "Names \t Birthday \t Age\n";
+        for (int i = 0; i < names.size(); i++) {
             infoText += names.get(i).getName() + " \t " + names.get(i).getBirthday() + " \t " + names.get(i).getAge() + "\n";
-        
-            
             
         }
         this.taInfo.setText(infoText);
         
-        ////for loop, inputs all Person name\n, birthday\n and ageCalculator() to respective JTextAreas, but first clears the text
-                
+        
     }
     
     private void export() {
@@ -241,14 +262,14 @@ class AddRecord {
 
     ListOfRecords listOfRecords;
     
-    protected JFrame frame;
-    protected JPanel panName, panBirthday, panButton;
-    protected JLabel labName, labBirthday;
-    protected JTextField tfName;
-    protected JComboBox comboxMonth, comboxDay, comboxYear;
-    protected JButton buttSaveBack, buttSaveAnother, buttBack;
+    protected static JFrame frame;
+    protected static JPanel panName, panBirthday, panButton;
+    protected static JLabel labName, labBirthday;
+    protected static JTextField tfName;
+    protected static JComboBox comboxMonth, comboxDay, comboxYear;
+    protected static JButton buttSaveBack, buttSaveAnother, buttBack;
     
-    protected LocalDate birthday;
+    protected static LocalDate birthday;
     
     final String[] mm = {"January", "February", "March", "April", "May", "June", "July", 
                    "August", "September", "October", "November", "December"};
@@ -321,14 +342,7 @@ class AddRecord {
         
         
     }
-    
-//    @Override
-//    public void actionPerformed(ActionEvent actionEvent) {
-//        Object sauce = actionEvent.getSource();
-//        
-//       
-//    
-//    }
+
     
 }
 
@@ -339,17 +353,15 @@ class AddRecord {
 
 
 
-class RemoveRecord implements ActionListener{
+class RemoveRecord {
 
-    ListOfRecords listOfRecords;
+    protected JFrame frame;
+    protected JPanel panName, panButton;
+    protected JLabel labName;
+    protected JTextField tfName;
+    protected JButton buttRemoveBack, buttRemoveAnother, buttBack;
     
-    private JFrame frame;
-    private JPanel panName, panButton;
-    private JLabel labName;
-    private JTextField tfName;
-    private JButton buttRemoveBack, buttRemoveAnother, buttBack;
-    
-    private String name;
+    protected String name;
             
     RemoveRecord() {
         
@@ -388,37 +400,8 @@ class RemoveRecord implements ActionListener{
         
         frame.pack();
         frame.setVisible(true);
+       
         
-        buttRemoveBack.addActionListener(this);
-        buttRemoveAnother.addActionListener(this);
-        buttBack.addActionListener(this);
-        
-    }
-    
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        Object sauce = actionEvent.getSource();
-        
-        if (sauce == buttRemoveBack) {
-        
-            
-            
-            ////close
-        
-        }
-        
-        if (sauce == buttRemoveAnother) {
-            
-            
-            
-        }
-        
-        if (sauce == buttBack) {
-            
-            ////close
-        
-        }
-    
     }
     
     
@@ -432,7 +415,7 @@ class Person {
     Person(String name, LocalDate birthday) {
         setName(name);
         setBirthday(birthday);
-        this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        this.birthday.format(DateTimeFormatter.ofPattern("dd-MM-yyyy").withResolverStyle(ResolverStyle.STRICT));
     }
     
     private void setName(String name) {
