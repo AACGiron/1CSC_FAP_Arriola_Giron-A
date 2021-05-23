@@ -186,6 +186,7 @@ public class ListOfRecords implements ActionListener, ItemListener{
         
         Object sauce = actionEvent.getSource();
         
+        try{
         //for this class
         if (sauce == buttAddRecord) {
             addRecord = new AddRecord();
@@ -206,11 +207,11 @@ public class ListOfRecords implements ActionListener, ItemListener{
         }
         if (radbuttAscend.isSelected()) {
             isAscending = true;
-            sort();
+            refresh();
         }
         else if (radbuttAscend.isSelected()) {
             isAscending = false;
-            sort();
+            refresh();
         }
         
         
@@ -260,19 +261,22 @@ public class ListOfRecords implements ActionListener, ItemListener{
             ////close
         
         }
-    
+    }
+    catch(NullPointerException e){
+        System.out.print("");
+    }
     }
     
     
     public void refresh() {
         
         ////for loop, inputs all Person name\n, birthday\n and ageCalculator() to respective JTextAreas, but first clears the text
+        sort();
         infoText = "Names \t Birthday \t Age\n";
         for (int i = 0; i < names.size(); i++) {
             infoText += names.get(i).getName() + " \t " + names.get(i).getBirthday() + " \t " + names.get(i).getAge() + "\n";
             
         }
-        sort();
         this.taInfo.setText(infoText);
         
         
@@ -303,7 +307,7 @@ public class ListOfRecords implements ActionListener, ItemListener{
         
         Object sauce = e.getSource();
         if (sauce == comboxSort) {
-            sort();
+            refresh();
         }
     }
 }
@@ -342,7 +346,7 @@ class AddRecord {
     AddRecord() {
         
         ////For loop, sets yyyy into array of years, 1900 to current year;
-        yearNow = Period.between(LocalDate.parse("1900-01-01"), LocalDate.now()).getYears() + 1;
+        yearNow = Period.between(LocalDate.parse("1900-01-01"), LocalDate.now()).getYears();
         yyyy = new String[yearNow];
         for (int i = 0; i < yyyy.length; i++) {
             yyyy[i] = Integer.toString(1900 + i);
