@@ -145,7 +145,7 @@ public class ListOfRecords implements ActionListener{
         
         //for addRecord
          if (sauce == addRecord.buttSaveBack) {
-            if (addRecord.comboxMonth.getSelectedIndex() + 1 < 10) {
+            if (addRecord.comboxMonth.getSelectedIndex() < 10) {
                 addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
             }
             else { 
@@ -156,11 +156,12 @@ public class ListOfRecords implements ActionListener{
                     "-" + addRecord.sMonth + "-" + addRecord.comboxDay.getSelectedItem()));
             names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
              refresh();
+             addRecord.frame.dispose();
             ////close
         }
         
         if (sauce == addRecord.buttSaveAnother) {
-            if (addRecord.comboxMonth.getSelectedIndex() + 1 < 10) {
+            if (addRecord.comboxMonth.getSelectedIndex() < 10) {
                 
                 addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
             }
@@ -174,6 +175,7 @@ public class ListOfRecords implements ActionListener{
         }
         if (sauce == addRecord.buttBack) {
             ////close
+            addRecord.frame.dispose();
         }
         
         
@@ -185,12 +187,13 @@ public class ListOfRecords implements ActionListener{
                     names.remove(i);
                     refresh();
                     break;
+                    
                 }
                 ////if i == names size throw exception
             }
                         
             
-            
+            removeRecord.frame.dispose();
             ////close
         
         }
@@ -206,6 +209,7 @@ public class ListOfRecords implements ActionListener{
         }
         
         if (sauce == removeRecord.buttBack) {
+            removeRecord.frame.dispose();
             
             ////close
         
@@ -376,7 +380,7 @@ class RemoveRecord {
      tfName = new JTextField(40);
      
      buttRemoveBack = new JButton("Remove and Go Back");
-     buttRemoveAnother = new JButton("Save and Remove");
+     buttRemoveAnother = new JButton("Remove and Add another");
      buttBack = new JButton("Back");
        
     }
