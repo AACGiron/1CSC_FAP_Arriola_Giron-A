@@ -120,7 +120,8 @@ public class ListOfRecords implements ActionListener, ItemListener{
     }
    
    public void addRecord() {
-   if (addRecord.comboxMonth.getSelectedIndex() < 10) {
+	  try { 
+  	 if (addRecord.comboxMonth.getSelectedIndex() < 10) {
                 addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
             }
             else { 
@@ -132,9 +133,14 @@ public class ListOfRecords implements ActionListener, ItemListener{
             names.add(new Person(addRecord.tfName.getText(),addRecord.birthday));
             
              refresh();
+	  }
+	    catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Please input a proper date!");
+        }
    }
    
    public void removeRecord() {
+	   try{
         for (int i = 0; i < names.size(); i++) {
             if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
                 names.remove(i);
@@ -143,6 +149,10 @@ public class ListOfRecords implements ActionListener, ItemListener{
                     
             }
             ////if i == names size throw exception
+        }
+		    }
+        catch (NullPointerException e){
+            System.out.print("");
         }
    
    }
