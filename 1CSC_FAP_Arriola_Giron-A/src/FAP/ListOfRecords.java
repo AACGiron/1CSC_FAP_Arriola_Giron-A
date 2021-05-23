@@ -123,6 +123,7 @@ public class ListOfRecords implements ActionListener{
         Object sauce = actionEvent.getSource();
         
         //for this class
+        
         if (sauce == buttAddRecord) {
             addRecord = new AddRecord();
             addRecord.launchFrame();
@@ -143,7 +144,10 @@ public class ListOfRecords implements ActionListener{
         
         
         
+        
+        
         //for addRecord
+        try{
          if (sauce == addRecord.buttSaveBack) {
             if (addRecord.comboxMonth.getSelectedIndex() < 10) {
                 addRecord.sMonth = "0" + Integer.toString(addRecord.comboxMonth.getSelectedIndex() + 1);
@@ -177,10 +181,14 @@ public class ListOfRecords implements ActionListener{
             ////close
             addRecord.frame.dispose();
         }
-        
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Please input a proper date!");
+        }
         
         
         //for removeRecord
+        try{
         if (sauce == removeRecord.buttRemoveBack) {
             for (int i = 0; i < names.size(); i++) {
                 if (names.get(i).getName().equals(removeRecord.tfName.getText())) {
@@ -195,7 +203,7 @@ public class ListOfRecords implements ActionListener{
             
             removeRecord.frame.dispose();
             ////close
-        
+            
         }
         
         if (sauce == removeRecord.buttRemoveAnother) {
@@ -214,7 +222,11 @@ public class ListOfRecords implements ActionListener{
             ////close
         
         }
-    
+        }
+        catch (NullPointerException e){
+            System.out.print("");
+        }
+        
     }
     
     
