@@ -527,10 +527,10 @@ class BdaySort implements Comparator<Person>
     public int compare(Person p1, Person p2) {
         
         if ((tag.equals("Birthday") && isAscending) || (tag.equals("Age") && !isAscending)){
-            return p2.getBirthday().compareTo(p1.getBirthday());
+            return p1.getBirthday().compareTo(p2.getBirthday());
         }
         else {
-            return p1.getBirthday().compareTo(p2.getBirthday());
+            return p2.getBirthday().compareTo(p1.getBirthday());
         }
         
     }
