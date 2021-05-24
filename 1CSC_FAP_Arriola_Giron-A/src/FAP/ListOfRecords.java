@@ -327,7 +327,7 @@ class AddRecord {
         
         ////For loop, sets yyyy into array of years, 1900 to current year;
         yearNow = Period.between(LocalDate.parse("1900-01-01"), LocalDate.now()).getYears();
-        yyyy = new String[yearNow];
+        yyyy = new String[yearNow + 1];
         for (int i = 0; i < yyyy.length; i++) {
             yyyy[i] = Integer.toString(1900 + i);
             
