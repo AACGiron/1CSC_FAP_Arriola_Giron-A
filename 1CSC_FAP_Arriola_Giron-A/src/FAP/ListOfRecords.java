@@ -51,6 +51,7 @@ public class ListOfRecords implements ActionListener, ItemListener{
         
         
         taInfo = new JTextArea(20, 60);
+        taInfo.setEditable(false);
 	scrl = new JScrollPane(taInfo);
         
         scrl.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
@@ -116,6 +117,9 @@ public class ListOfRecords implements ActionListener, ItemListener{
         buttAddRecord.addActionListener(this);
         buttRemRecord.addActionListener(this);
         buttExport.addActionListener(this);
+        comboxSort.addItemListener(this);
+        radbuttAscend.addActionListener(this);
+        radbuttDescend.addActionListener(this);
 
     }
    
@@ -159,114 +163,17 @@ public class ListOfRecords implements ActionListener, ItemListener{
    
    public void sort() {
         
-        if (comboxSort.getSelectedItem().equals("Name") && isAscending) {
-            names.sort(new AscNameSort());
+        if (comboxSort.getSelectedItem().equals("Name")) {
+            names.sort(new NameSort(isAscending));
             
         }
-        else if (comboxSort.getSelectedItem().equals("Birthday") && isAscending) {
-            names.sort(new AscBdaySort());
+        else if (comboxSort.getSelectedItem().equals("Birthday")) {
+            names.sort(new BdaySort("Birthday", isAscending));
         }
-        else if (comboxSort.getSelectedItem().equals("Age") && isAscending) {
-            names.sort(new DescBdaySort());
-        }
-        else if (comboxSort.getSelectedItem().equals("Name") && ! isAscending) {
-            names.sort(new DescNameSort());
-        }
-        else if (comboxSort.getSelectedItem().equals("Birthday") && ! isAscending) {
-            names.sort(new DescBdaySort());
-        }
-        else if (comboxSort.getSelectedItem().equals("Age") && ! isAscending) {
-            names.sort(new AscBdaySort());
-        }
-            
-    }
-   
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        
-        Object sauce = actionEvent.getSource();
-        
-        try{
-        //for this class
-        if (sauce == buttAddRecord) {
-            addRecord = new AddRecord();
-            addRecord.launchFrame();
-            addRecord.buttSaveBack.addActionListener(this);
-            addRecord.buttSaveAnother.addActionListener(this);
-            addRecord.buttBack.addActionListener(this);
-        }
-        if (sauce == buttRemRecord) {
-            removeRecord = new RemoveRecord();
-            removeRecord.launchFrame();
-            removeRecord.buttRemoveBack.addActionListener(this);
-            removeRecord.buttRemoveAnother.addActionListener(this);
-            removeRecord.buttBack.addActionListener(this);
-        }
-        if (sauce == buttExport) {
-            export();
-        }
-        if (radbuttAscend.isSelected()) {
-            isAscending = true;
-            refresh();
-        }
-        else if (radbuttAscend.isSelected()) {
-            isAscending = false;
-            refresh();
-        }
-        
-        
-        
-        //for addRecord
-         if (sauce == addRecord.buttSaveBack) {
-            
-            addRecord();
-            addRecord.frame.dispose();
-            ////close
-        }
-        
-        if (sauce == addRecord.buttSaveAnother) {
-            
-            addRecord();
-           
-            
-        }
-        if (sauce == addRecord.buttBack) {
-            ////close
-            addRecord.frame.dispose();
-        }
-        
-        
-        
-        //for removeRecord
-        if (sauce == removeRecord.buttRemoveBack) {
-         
-            removeRecord();
-           
-                      
-            
-            removeRecord.frame.dispose();
-            ////close
-        
-        }
-        
-        if (sauce == removeRecord.buttRemoveAnother) {
-            
-            removeRecord();
-
-        }
-        
-        if (sauce == removeRecord.buttBack) {
-            removeRecord.frame.dispose();
-            
-            ////close
-        
+        else if (comboxSort.getSelectedItem().equals("Age")) {
+            names.sort(new BdaySort("Age", isAscending));
         }
     }
-    catch(NullPointerException e){
-        System.out.print("");
-    }
-    }
-    
     
     public void refresh() {
         
@@ -301,7 +208,81 @@ public class ListOfRecords implements ActionListener, ItemListener{
         }
     
     }
-
+@Override
+    public void actionPerformed(ActionEvent actionEvent) {
+        
+        Object sauce = actionEvent.getSource();
+        
+        try {
+            //for this class
+            if (sauce == buttAddRecord) {
+                addRecord = new AddRecord();
+                addRecord.launchFrame();
+                addRecord.buttSaveBack.addActionListener(this);
+                addRecord.buttSaveAnother.addActionListener(this);
+                addRecord.buttBack.addActionListener(this);
+            }
+            if (sauce == buttRemRecord) {
+                removeRecord = new RemoveRecord();
+                removeRecord.launchFrame();
+                removeRecord.buttRemoveBack.addActionListener(this);
+                removeRecord.buttRemoveAnother.addActionListener(this);
+                removeRecord.buttBack.addActionListener(this);
+            }
+            if (sauce == buttExport) {
+                export();
+            }
+            
+            if (radbuttAscend.isSelected()) {
+                isAscending = true;
+                refresh();
+            }
+            else if (radbuttDescend.isSelected()) {
+                isAscending = false;
+                refresh();
+            }
+        
+        
+        
+            //for addRecord
+             if (sauce == addRecord.buttSaveBack) {
+            
+                addRecord();
+                addRecord.frame.dispose();
+                ////close
+            }
+        
+            if (sauce == addRecord.buttSaveAnother) {
+                addRecord();
+            }
+            
+            if (sauce == addRecord.buttBack) {
+                
+                addRecord.frame.dispose();
+            }
+        
+        
+        
+            //for removeRecord
+            if (sauce == removeRecord.buttRemoveBack) {
+                
+                removeRecord();
+                removeRecord.frame.dispose();
+            }
+        
+            if (sauce == removeRecord.buttRemoveAnother) {
+                removeRecord();
+            }
+        
+            if (sauce == removeRecord.buttBack) {
+                removeRecord.frame.dispose();
+            
+            }
+        }
+        catch(NullPointerException e){
+            System.out.print("");
+        }
+    }
     @Override
     public void itemStateChanged(ItemEvent e) {
         
@@ -323,7 +304,6 @@ public class ListOfRecords implements ActionListener, ItemListener{
 
 class AddRecord {
 
-    ListOfRecords listOfRecords;
     
     protected static JFrame frame;
     protected static JPanel panName, panBirthday, panButton;
@@ -474,7 +454,7 @@ class Person {
     private String name;
     private LocalDate birthday;
     private int age;
-    private LocalDate dateNow;
+    
     Person(String name, LocalDate birthday) {
         setName(name);
         setBirthday(birthday);
@@ -515,35 +495,45 @@ class Person {
     
 }
 
-class AscNameSort implements Comparator<Person> 
-{
+class NameSort implements Comparator<Person> 
+{   
+    boolean isAscending;
+    NameSort(boolean isAscending) {
+        this.isAscending = isAscending;
+    }
+    
     @Override
     public int compare(Person p1, Person p2) {
-        return p2.getName().compareToIgnoreCase(p1.getName());
+        if (!isAscending){
+            return p2.getName().compareToIgnoreCase(p1.getName());
+        }
+        else {
+            return p1.getName().compareToIgnoreCase(p2.getName());
+        
+        }
     }
 }
 
-class DescNameSort implements Comparator<Person> 
-{
+
+class BdaySort implements Comparator<Person> 
+{   
+    String tag;
+    boolean isAscending;
+    BdaySort(String tag, boolean isAscending) {
+        this.tag = tag;
+        this.isAscending = isAscending;
+    }
     @Override
     public int compare(Person p1, Person p2) {
-        return p1.getName().compareToIgnoreCase(p2.getName());
+        
+        if ((tag.equals("Birthday") && isAscending) || (tag.equals("Age") && !isAscending)){
+            return p2.getBirthday().compareTo(p1.getBirthday());
+        }
+        else {
+            return p1.getBirthday().compareTo(p2.getBirthday());
+        }
+        
     }
 }
 
-class AscBdaySort implements Comparator<Person> 
-{
-    @Override
-    public int compare(Person p1, Person p2) {
-        return p2.getBirthday().compareTo(p1.getBirthday());
-    }
-}
-
-class DescBdaySort implements Comparator<Person> 
-{
-    @Override
-    public int compare(Person p1, Person p2) {
-        return p1.getBirthday().compareTo(p2.getBirthday());
-    }
-}
 
